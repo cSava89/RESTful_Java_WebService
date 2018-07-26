@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+	
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+
+		<link rel="stylesheet" href="assets/css/style.css">
+
+		<title class="title">Distributed programming II - Assignment 3 Documentation</title>
+
+	</head>
+	
+	
+	<body>
+
+		<div class="container">
+
+			<div class="intro-info">
+			
+				<h1>Distributed Programming II - Assignment 3 REST API DOC</h1>
+				<h3>Student: Claudio Sava s232521</h4>
+				<h3>Academic Year: 2017/18</h4>	
+			
+			</div>
+
+			<hr>
+			<br>
+			
+			<p class="intro-description">This document provides the detailed description of the "Assignment 3 REST API web service". In particular here the index of provided informations: <br>
+			- <a href="#resDesc">Conceptual structure of resources</a> <br>
+			- <a href="#resDesc">Resources mappings to URLs</a> <br>
+			-  <a href="#opDesc">The description of each possible operation with their query string parameters and/or allowed request body, the possible 
+			status codes and, for each possible status code, the response body.</a> <br>
+			- <a href="#desDesc">Description of design choices for service implementation.</a> </p>
+
+			
+			<h3 class="section-title" id="resDesc">Resources Design and their URLs Mappings</h3>
+			<div class="urls-maps">
+			
+			<p class="text-bold"><b>Service BASE URL</b> <a href="http://localhost:8080/NfvDeployer/rest">http://localhost:8080/NfvDeployer/rest</a></p>
+			<p class="text-bold"><b>Service WADL description</b> <a href="http://localhost:8080/NfvDeployer/rest/application.wadl">http://localhost:8080/NfvDeployer/rest/application.wadl</a></p>	
+				
+			</div>
+			
+			<!-- NFFGs RESOURCE -->
+			<h3 class="section-title">Nffgs Resource</h3>
+			<table class="resTable">
+				<thead class="resTable-head">
+					<tr>
+						<th>Resources names</th>
+						<th> XML Element name </th>
+						<th> XML Schema Type </th>
+						<th>URLs</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="Table-bg-color">
+						<th>nffgs</th>
+						<td class="tab-elems">nffgs</td>
+						<td  class="tab-elems"><i>NFFGsType</i></td>
+						<td>/nffgs</td>
+						<td>Set of Nffgs in the system (just name and deployed time but without nodes, for scalability reasons)</td>
+					</tr>
+					<tr class="Table-bg-color2">
+						<th>&#x21B3; {id}</th>
+						<td class="tab-elems">nffg</td>
+						<td  class="tab-elems"><i>NF-FGtype</i></td>
+						<td>/nffgs/{id}</td>
+						<td>A single NFFG</td>
+					</tr>
+					<tr class="Table-bg-color">
+						<th>&#x21B3; &#x21B3; {id}</th>
+						<td class="tab-elems">node</td>
+						<td  class="tab-elems"> <i>NodeType</i></td>
+						<td>/nffgs/{nffg_id}/{node_id}</td>
+						<td>A single network node in an NFFG</td>
+					</tr>
+					<tr class="Table-bg-color2">
+						<th>&#x21B3; &#x21B3; &#x21B3; links</th>
+						<td class="tab-elems"><i>none</i></td>
+						<td class="tab-elems"><i>none</i></td><
+						<td>/nffgs/{nffg_id}/{node_id}/links</td>
+						<td>Set of links of a given node</td>
+					</tr>
+					<tr class="Table-bg-color">
+						<th>&#x21B3; &#x21B3; &#x21B3; &#x21B3; {id}</th>
+						<td class="tab-elems">link</td>
+						<td  class="tab-elems"> <i>LinkType</i></td>
+						<td>/nffgs/{nffg_id}/{node_id}/links/{id}</td>
+						<td>A single link of a given node</td>
+					</tr>
+					<tr class="Table-bg-color2">
+						<th>&#x21B3; &#x21B3; &#x21B3; reachableHosts</th>
+						<td class="tab-elems">reachablehosts</td>
+						<td  class="tab-elems"> <i>ReachableHostsType</i></td>
+						<td>/nffgs/{nffg_id}/{node_id}/reachablehosts</td>
+						<td>Get set of reachable hosts from node_id </td>
+					</tr>
+					
+				</tbody>
+			</table>
+                        
+                        <!-- Hosts RESOURCE -->
+			<h3 class="section-title">Hosts Resource</h3>
+			<table class="resTable">
+				<thead class="resTable-head">
+					<tr>
+						<th>Resources names</th>
+						<th> XML Element name </th>
+						<th> XML Schema Type </th>
+						<th>URLs</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="Table-bg-color">
+						<th>hosts</th>
+						<td class="tab-elems">hosts</td>
+						<td  class="tab-elems"> <i>HostsType</i></td>
+						<td>/hosts</td>
+						<td>Set of Hosts (physical hosts of IN)</td>
+					</tr>
+					<tr class="Table-bg-color2">
+						<th>&#x21B3; {id}</th>
+						<td class="tab-elems">host</td>
+						<td  class="tab-elems"><i>HostType</i></td>
+						<td>/hosts/{id}</td>
+						<td>A single host (physical host in IN)</td>
+					</tr>
+				</tbody>
+			</table>
+                        
+                        <!-- Connections RESOURCE -->
+			<h3 class="section-title">Physical Connections Resource</h3>
+			<table class="resTable">
+				<thead class="resTable-head">
+					<tr>
+						<th>Resources names</th>
+						<th> XML Element name </th>
+						<th> XML Schema Type </th>
+						<th>URLs</th>
+						<th>Description</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="Table-bg-color">
+						<th>connections</th>
+						<td class="tab-elems">connections </td>
+						<td  class="tab-elems">ConnectionsType</td>
+						<td>/connections</td>
+						<td>Set of Physical Connections between hosts</td>
+					</tr>
+					<tr class="Table-bg-color2">
+						<th>&#x21B3; connection</th>
+						<td class="tab-elems">plink</td>
+						<td  class="tab-elems"> PLPtype</td>
+						<td>/connections/connection</td>
+						<td>A single Physical Connection between hosts by means of query parameters</td>
+					</tr>
+				</tbody>
+			</table>
+			
+			<!-- Catalogue RESOURCE -->
+			<h3 class="section-title">Catalogue Resource</h3>
+			<table class="resTable">
+				<thead class="resTable-head">
+					<tr>
+						<th> Resources names </th>
+						<th> XML Element name </th>
+						<th> XML Schema Type </th>
+						<th> URLs </th>
+						<th> Description </th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="Table-bg-color">
+						<th> catalogue </th>
+						<td class="tab-elems"> catalogue </td>
+						<td  class="tab-elems"><i>CatalogueType</i></td>
+						<td>/catalogue</td>
+						<td>Set of VNFs types</td>
+					</tr>
+                    <tr class="Table-bg-color2">
+                        <th>&#x21B3; {vnf}</th>
+                        <td class="tab-elems"> vnf </td>
+                        <td  class="tab-elems"><i>VNFtype</i></td>
+                        <td>/catalogue/{vnf}</td>
+                        <td>Single {vnf} in the catalogue</td>
+                    </tr>
+				</tbody>
+			</table>
+			
+                        <br><br><br>
+			<hr>
+			
+			<!-- Operations list -->
+			<h3 class="section-title"  id="opDesc">Description of available operations on resources</h3>
+			<a href="#top">Go top of page (Index)</a>
+			<p class="intro-description"> Description of each possible operation with their query string parameters and/or allowed request body, the possible
+			status codes and, for each possible status code, the response body. </p>
+			
+			
+			<table border="1" class="resTable">
+				<thead class="resTable-head">
+					 <tr>
+						<th rowspan="2">Resource</th>
+						<th rowspan="2">Operation Method</th>
+		    				<th rowspan="2">Request Body</th>
+                            <th rowspan="2">Query Parameter Type</th>
+                            <th rowspan="2">Query Parameter Example</th>
+		    				<th colspan="2">Response</th>
+		    				<th rowspan="2">Description</th>
+	  				</tr>
+					<tr>
+						<th>Status Code</th>
+						<th>Response Body</th>
+					</tr>
+				</thead>
+				<tbody>
+                    <tr class="Table-bg-color">
+                        <th rowspan="8" class="resUrl">/nffgs</th>
+                        <td class="method"  rowspan="3">GET</td>
+                        <td rowspan="3"><i>none</i></td>
+                        <td rowspan="3"><i>String</i></td>
+                        <td rowspan="3"><i>/nffgs/?from=2018-06-14T13:35:42.761</i></td>
+                        <td class="posStatus"> 200 OK </td>
+                        <td> nffgs </td>
+                        <td> Get the list of nffgs deployed in the system. Each nffg is returned without allocated nodes, for scalability reasons. If FROM query parameter is present each nffg having deploy time >= from is returned </td>
+                    </tr>
+                    <tr class="Table-bg-color"><td class="negStatus"> 400 Bad Request</td> <td></td> <td> The query parameter FROM was malformed.</td></tr>
+                    <tr class="Table-bg-color"><td class="negStatus"> 500 Internal Server Error</td> <td></td> <td> A server error occurred. Try later.</td></tr>
+                    <tr class="Table-bg-color">
+                        <td class="method" rowspan="5">POST</td>
+                        <td rowspan="5">nffg</td>
+                        <td rowspan="5"><i>none</i></td>
+                        <td rowspan="5"><i>none</i></td>
+                        <td class="posStatus"> 200 OK </td>
+                        <td> nffg </td>
+                        <td> Deploy/Allocate an entire nffg </td>
+                    </tr>
+                    <tr  class="Table-bg-color"><td class="negStatus"> 400 Bad Request</td> <td></td> <td> Request was malformed.</td></tr>
+                    <tr  class="Table-bg-color"><td class="negStatus"> 409 Conflict</td> <td></td> <td> Currently, allocation of this nffg is not possible.</td></tr>
+                    <tr class="Table-bg-color"><td class="negStatus"> 500 Internal Server Error</td> <td></td> <td> A server error occurred. Try later.</td></tr>
+                    <tr class="Table-bg-color"><td class="negStatus"> 502 Bad Gateway</td> <td></td> <td> A backend server error occurred. Try later.</td></tr>
+                    <tr class="Table-bg-color2">
+                        <th rowspan="11" class="resUrl">/nffgs/{id}</th>
+                        <td class="method" rowspan="3">GET</td>
+                        <td rowspan="3"><i>none</i></td>
+                        <td rowspan="3"><i>none</i></td>
+                        <td rowspan="3"><i>none</i></td>
+                        <td class="posStatus"> 200 OK </td>
+                        <td> nffg </td>
+                        <td> Get complete nffg with allocated nodes </td>
+                    </tr>
+                    <tr class="Table-bg-color2"><td class="negStatus"> 404 Not Found</td> <td></td> <td> Requested nffg has not been found in the system.</td></tr>
+                    <tr class="Table-bg-color2"><td class="negStatus"> 500 Internal Server Error</td> <td></td> <td> A server error occurred. Try later.</td></tr>
+                    <tr class="Table-bg-color2">
+                        <td class="method" rowspan="5">POST</td>
+                        <td rowspan="5">node</td>
+                        <td rowspan="5"><i>none</i></td>
+                        <td rowspan="5"><i>none</i></td>
+                        <td class="posStatus"> 200 OK </td>
+                        <td> node </td>
+                        <td> Deploy/Allocate a node in {id} nffg </td>
+                    </tr>
+                    <tr  class="Table-bg-color2"><td class="negStatus"> 400 Bad Request</td> <td></td> <td> Request was malformed.</td></tr>
+                    <tr  class="Table-bg-color2"><td class="negStatus"> 409 Conflict</td> <td></td> <td> Currently, allocation of this node is not possible.</td></tr>
+                    <tr class="Table-bg-color2"><td class="negStatus"> 500 Internal Server Error</td> <td></td> <td> A server error occurred. Try later.</td></tr>
+                    <tr class="Table-bg-color2"><td class="negStatus"> 502 Bad Gateway</td> <td></td> <td> A backend server error occurred. Try later.</td></tr>
+                    <tr class="Table-bg-color2">
+                        <td class="Table-bg-color3" rowspan="3">DELETE (501 Not Implemented)</td>
+                        <td rowspan="3"><i>none</i></td>
+                        <td rowspan="3"><i>none</i></td>
+                        <td rowspan="3"><i>none</i></td>
+                        <td class="posStatus"> 204 No Content </td>
+                        <td> </td>
+                        <td> Nffg has been undeployed correctly and deleted from the NFV system. </td>
+                    </tr>
+                    <tr class="Table-bg-color2"><td class="negStatus"> 404 Not Found </td> <td></td> <td> Provided nffg has not been found.</td></tr>
+                    <tr class="Table-bg-color2"><td class="negStatus"> 500 Internal Server Error</td> <td></td> <td> A server error occurred. Try later.</td></tr>
+                    <tr class="Table-bg-color">
+                        <th rowspan="7" class="resUrl">/nffgs/{nffg_id}/{node_id}</th>
+                        <td class="method" rowspan="3">GET</td>
+                        <td rowspan="3"><i>none</i></td>
+                        <td rowspan="3"><i>none</i></td>
+                        <td rowspan="3"><i>none</i></td>
+                        <td class="posStatus"> 200 OK </td>
+                        <td> node </td>
+                        <td> Get requested {node_id} from provided {id} nffg without links</td>
+                    </tr>
+                    <tr class="Table-bg-color"><td class="negStatus"> 404 Not Found</td> <td></td> <td> Provided node has not been found in the system.</td></tr>
+                    <tr class="Table-bg-color"><td class="negStatus"> 500 Internal Server Error</td> <td></td> <td>A server error occurred. Try later.</td></tr>
+                    <tr class="Table-bg-color">
+                        <td class="Table-bg-color3" rowspan="4">DELETE (501 Not Implemented)</td>
+                        <td rowspan="4"><i>none</i></td>
+                        <td rowspan="4"><i>none</i></td>
+                        <td rowspan="4"><i>none</i></td>
+                        <td class="posStatus"> 204 No Content </td>
+                        <td> </td>
+                        <td> Node has been undeployed correctly and deleted from the NFV system. </td>
+                    </tr>
+                    <tr class="Table-bg-color"><td class="negStatus"> 403 Forbidden </td> <td></td> <td> Each incoming or outgoing link must be removed before deleting this node.</td></tr>
+                    <tr class="Table-bg-color"><td class="negStatus"> 404 Not Found </td> <td></td> <td> Provided {nffg_id} or {node_id} have not been found.</td></tr>
+                    <tr class="Table-bg-color"><td class="negStatus"> 500 Internal Server Error</td> <td></td> <td> A server error occurred. Try later.</td></tr>
+                    <tr class="Table-bg-color2">
+                        <th rowspan="6" class="resUrl">/nffgs/{nffg_id}/{node_id}/links</th>
+                        <td class="method" rowspan="6">POST</td>
+                        <td rowspan="6">link</td>
+                        <td rowspan="6"><i>none</i></td>
+                        <td rowspan="6"><i>none</i></td>
+                        <td class="posStatus"> 200 OK </td>
+                        <td> link </td>
+                        <td> Link has been correctly created. </td>
+                    </tr>
+                    <tr class="Table-bg-color2"><td class="negStatus"> 400 Bad Request</td> <td></td> <td> Request was malformed.</td></tr>
+                    <tr class="Table-bg-color2"><td class="negStatus"> 403 Bad Request</td> <td></td> <td> Attempt to overwrite a no overwritable and already present link.</td></tr>
+                    <tr class="Table-bg-color2"><td class="negStatus"> 404 Not Found</td> <td></td> <td> Provided {nffg_id} or {node_id} have not been found in the system.</td></tr>
+                    <tr class="Table-bg-color2"><td class="negStatus"> 500 Internal Server Error</td> <td></td> <td> A server error occurred. Try later.</td></tr>
+                    <tr class="Table-bg-color2"><td class="negStatus"> 502 Bad Gateway</td> <td></td> <td> A backend server error occurred. Try later.</td></tr>
+                    
+                    <tr class="Table-bg-color">
+                        <th rowspan="3" class="resUrl">/nffgs/{nffg_id}/{node_id}/links/{id}</th>
+                        <td class="Table-bg-color3" rowspan="3">DELETE (501 Not Implemented)</td>
+                        <td rowspan="3"><i>none</id></td>
+                        <td rowspan="3"><i>none</i></td>
+                        <td rowspan="3"><i>none</i></td>
+                        <td class="posStatus"> 204 No Content </td>
+                        <td>  </td>
+                        <td> Link has been deleted from removed. </td>
+                    </tr>
+                    <tr  class="Table-bg-color"><td class="negStatus"> 404 Not Found</td> <td></td> <td> Provided {nffg_id} or {node_id} have not been found in the system.</td></tr>
+                    <tr  class="Table-bg-color"><td class="negStatus"> 500 Internal Server Error</td> <td></td> <td> A server error occurred. Try later.</td></tr>
+                    <tr class="Table-bg-color2">
+                        <th rowspan="4" class="resUrl">/nffgs/{nffg_id}/{node_id}/reachablehosts</th>
+                        <td class="method" rowspan="4">GET</td>
+                        <td rowspan="4"><i>none</i></td>
+                        <td rowspan="4"><i>none</i></td>
+                        <td rowspan="4"><i>none</i></td>
+                        <td class="posStatus"> 200 OK </td>
+                        <td> reachablehosts </td>
+                        <td> Get an extended node (node info + reachable hosts) for this node. </td>
+                    </tr>
+                    <tr  class="Table-bg-color2"><td class="negStatus"> 404 Not Found</td> <td></td> <td> Provided {nffg_id} or {node_id} have not been found in the system.</td></tr>
+                    <tr  class="Table-bg-color2"><td class="negStatus"> 500 Internal Server Error</td> <td></td> <td> A server error occurred. Try later.</td></tr>
+                    <tr class="Table-bg-color2"><td class="negStatus"> 502 Bad Gateway</td> <td></td> <td> A backend server error occurred. Try later.</td></tr>
+                    <tr class="Table-bg-color">
+                        <th rowspan="2" class="resUrl">/hosts</th>
+                        <td class="method" rowspan="2">GET</td>
+                        <td rowspan="2"><i>none</id></td>
+                        <td rowspan="2"><i>none</i></td>
+                        <td rowspan="2"><i>none</i></td>
+                        <td class="posStatus"> 200 OK </td>
+                        <td> hosts </td>
+                        <td> Get the list of hosts, without virtualized nodes, in the NFV system. </td>
+                    </tr>
+                    <tr class="Table-bg-color"><td class="negStatus"> 500 Internal Server Error</td> <td></td> <td> A server error occurred. Try later.</td></tr>
+                    <tr class="Table-bg-color2">
+                        <th rowspan="3" class="resUrl">/hosts/{id}</th>
+                        <td class="method" rowspan="3">GET</td>
+                        <td rowspan="3"><i>none</id></td>
+                        <td rowspan="3"><i>none</i></td>
+                        <td rowspan="3"><i>none</i></td>
+                        <td class="posStatus"> 200 OK </td>
+                        <td> host </td>
+                        <td> Get required host from NFV system. </td>
+                    </tr>
+                    <tr  class="Table-bg-color2"><td class="negStatus"> 404 Not Found </td> <td></td> <td> The host with provided name has not been found.</td></tr>
+                    <tr  class="Table-bg-color2"><td class="negStatus"> 500 Internal Server Error</td> <td></td> <td> A server error occurred. Try later.</td></tr>
+                    <tr class="Table-bg-color">
+                        <th rowspan="2" class="resUrl">/connections</th>
+                        <td class="method" rowspan="2">GET</td>
+                        <td rowspan="2"><i>none</id></td>
+                        <td rowspan="2"><i>none</i></td>
+                        <td rowspan="2"><i>none</i></td>
+                        <td class="posStatus"> 200 OK </td>
+                        <td> connections </td>
+                        <td> Get the list of physical connections. </td>
+                    </tr>
+                    <tr class="Table-bg-color"><td class="negStatus"> 500 Internal Server Error</td> <td></td> <td> A server error occurred. Try later.</td></tr>
+                    <tr class="Table-bg-color2">
+                        <th rowspan="4" class="resUrl">/connections/connection</th>
+                            <td class="method" rowspan="4">GET</td>
+                            <td rowspan="4"><i>none</id></td>
+                            <td rowspan="4"><i>String</i></td>
+                            <td rowspan="4"><i>/connections/connection?host1=H0&host2=H2</i></td>
+                            <td class="posStatus"> 200 OK </td>
+                            <td> plink </td>
+                            <td> Get the physical connection between host1 and host2. </td>
+                            </tr>
+                            <tr  class="Table-bg-color2"><td class="negStatus"> 400 Bad Request </td> <td></td> <td> The host1 or host2 or both are null.</td></tr>
+                            <tr  class="Table-bg-color2"><td class="negStatus"> 404 Not Found </td> <td></td> <td> The host1 or host2 or both have not been found.</td></tr>
+                            <tr  class="Table-bg-color2"><td class="negStatus"> 500 Internal Server Error</td> <td></td> <td> A server error occurred. Try later.</td></tr>
+                    <tr class="Table-bg-color">
+						<th rowspan="2" class="resUrl">/catalogue</th>
+						<td class="method" rowspan="2">GET</td>
+						<td rowspan="2"><i>none</i></td>
+                        <td rowspan="2"><i>none</i></td>
+                        <td rowspan="2"><i>none</i></td>
+						<td class="posStatus"> 200 OK </td>
+						<td> catalogue </td>
+						<td> Get the whole catalogue </td>
+					</tr>
+					<tr class="Table-bg-color"><td class="negStatus"> 500 Internal Server Error</td> <td></td> <td>A server error occurred. Try later.</td></tr>
+                    <tr class="Table-bg-color2">
+                    <th rowspan="3" class="resUrl">/catalogue/{vnf}</th>
+                    <td class="method" rowspan="3">GET</td>
+                    <td rowspan="3"><i>none</i></td>
+                    <td rowspan="3"><i>none</i></td>
+                    <td rowspan="3"><i>none</i></td>
+                    <td class="posStatus"> 200 OK </td>
+                    <td> vnf </td>
+                    <td> Get the particular vnf in the catalogue </td>
+                    </tr>
+                    <tr class="Table-bg-color2"><td class="negStatus"> 404 Not Found</td> <td></td> <td>The required vnf is not present in the catalogue.</td></tr>
+                    <tr class="Table-bg-color2"><td class="negStatus"> 500 Internal Server Error</td> <td></td> <td>A server error occurred. Try later.</td></tr>
+                </tbody>
+			</table>
+			
+			<br>
+			<hr>
+			
+			
+			<h3 class="section-title" id="desDesc">Description of design choices for service implementation.</h3>
+			<p class="intro-description">
+            - Design: it has been decided to conceptually subdived the whole service into two sections: a front-end and a back-end.
+            The front-end is composed of the interfaces representing the resources and their implementations.
+            The back-end, instead, is characterized by a singleton class "BackendSERVICE" that is in charge of both initializing the "BackendDB"(database) with the required initial data and to
+            provide all methods related to comunicate with Neo4jSample service. In addition, BackendSERVICE contains other methods used by resources implementation to provide above described operations.
+            <br> <br>
+			- Nodes, hosts, links and nffgs name uniqueness: the unique name assignment to the resources is in charge of the service, while client simply suggests names that are then checked by the service as follows. If the suggested name is not yet present in the system, the suggested name is kept, on the contrary the service define the name according to the policy associated to the resource. For example in case of node renaming the policy is VNFname virtualized + random number + belonging nffg. To be coherent, the client "random" naming follows the same policies.
+			 <br><br>
+             - Scalability: Assuming that a nffg in the system may have thousands of nodes in it, it is necessary to reduce the amount of data
+             transmitted to the client when it is asking for both all nffgs in the system and nffgs deployed from a given deploy time on. For this reason
+             it has been decided to return just names and deploy times for the required nffgs, avoiding node list overhead.
+             
+			 <br><br>
+			 
+			  	
+			 </p>
+			
+			<a href="#top">Go top of page (Index)</a>
+			
+			<!-- FOOTER ELEMENTS -->
+			<div class="footer">
+				<small> Distributed Programming II - Assignment 3 Documentation - Claudio Sava 232521 </small>
+			</div>
+				
+		</div>
+
+	</body>
+	
+</html>

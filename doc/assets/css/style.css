@@ -1,0 +1,62 @@
+body {
+	background-color:  #e6f2ff;
+}
+
+h1 {
+	text-align: center;
+	color:	#0033cc;
+}
+
+h3.section-title {
+
+	color: #002db3;
+	text-decoration: underline;
+	margin-top: 80px;
+
+}
+
+
+
+th, td {
+	border: 1px solid black;
+	text-align: left;
+	padding: 7px;
+}
+
+.resTable-head {
+    background-color: #3399ff;
+}
+
+td.tab-elems {
+	text-align: center;
+}
+
+
+.Table-bg-color3{
+	color: red;
+	font-weight:bold;
+}
+
+.Table-bg-color2{
+	background-color: #fff5c0;
+}
+
+.Table-bg-color{
+	background-color: #fffae6;
+}
+
+.footer{
+	text-align:center;
+}
+
+.posStatus{
+	color: green;
+}
+
+.negStatus{
+	color: red;
+}
+
+.method{
+	font-weight: bold;
+}

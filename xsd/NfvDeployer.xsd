@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+targetNamespace="http://www.example.org/NfvDeployer" 
+xmlns:tns="http://www.example.org/NfvDeployer" 
+elementFormDefault="qualified">
+
+
+<annotation>
+    <documentation xml:lang="en">
+      NFV system schema for DP2 Assignment 1a 
+      Copyright 2017 Claudio Sava s232521. All rights reserved.
+    </documentation>
+  </annotation>
+  
+  <element name="NfvSystem" type="tns:NfvSystemType">
+  	
+  	<key name="NF-FGname">
+  		<selector xpath="tns:nffgs/tns:nffg"></selector>
+  		<field xpath="@name"></field>
+  	</key>
+  	<key name="NodeName">
+  		<selector xpath="tns:nffgs/tns:nffg/tns:node"></selector>
+  		<field xpath="@name"></field>
+  	</key>
+  
+  	<key name="UniqueLink"> 
+  					<selector xpath="tns:nffgs/tns:nffg/tns:node/tns:links/tns:link"></selector>
+  					<field xpath="@sourceNode"></field>
+  					<field xpath="@destinationNode"></field>
+  				</key>
+  	
+  	<key name="HostName">
+  		<selector xpath="tns:hosts/tns:host"></selector>
+  		<field xpath="@name"></field>
+  	</key>
+  	<key name="Host1-Host2">
+  		<selector xpath="tns:connections/tns:plink"></selector>
+  		<field xpath="@host1"></field>
+  		<field xpath="@host2"></field>
+  	</key>
+  	<key name="VNFname">
+  		<selector xpath="tns:catalogue/tns:vnf"></selector>
+  		<field xpath="@name"></field>
+  	</key>
+  	
+  	<unique name="VNFonHost">
+  		<selector xpath="tns:hosts/tns:host/tns:virtualizednodes/tns:virtualizednode"></selector>
+  		<field xpath="@nodeName"></field>
+  	</unique>
+  	
+  	<keyref name="Node-NFFG" refer="tns:NF-FGname">
+  		<selector xpath="tns:nffgs/tns:nffg/node"></selector>
+  		<field xpath="@NF-FG"></field>
+  	</keyref>
+  	
+  	<keyref name="Node-Host" refer="tns:HostName">
+  		<selector xpath="tns:nffgs/tns:nffg/tns:node"></selector>
+  		<field xpath="@host"></field>
+  	</keyref>
+  	<keyref name="Link-SourceNode" refer="tns:NodeName"> 
+  		<selector xpath="tns:nffgs/tns:nffg/tns:node/tns:links/tns:link"></selector>
+  		<field xpath="@sourceNode"></field>
+  	</keyref>
+  	<keyref name="Link-DestinationNode" refer="tns:NodeName"> 
+  		<selector xpath="tns:nffgs/tns:nffg/tns:node/tns:links/tns:link"></selector>
+  		<field xpath="@destinationNode"></field>
+  	</keyref>
+  	<keyref name="Host-NodeList" refer="tns:NodeName">
+  		<selector xpath="tns:hosts/tns:host/tns:virtualizednodes/tns:virtualizednode"></selector>
+  		<field xpath="@nodeName"></field>
+  	</keyref>
+  	<keyref name="HostNode-NFFGname" refer="tns:NF-FGname">
+  		<selector xpath="tns:hosts/tns:host/tns:virtualizednodes/tns:virtualizednode"></selector>
+  		<field xpath="@nodeNFFG"></field>
+  	</keyref>
+  	<keyref name="Host1-HostName" refer="tns:HostName">
+  		<selector xpath="tns:connections/tns:plink"></selector>
+  		<field xpath="@host1"></field>
+  	</keyref>
+  	<keyref name="Host2-HostName" refer="tns:HostName">
+  		<selector xpath="tns:connections/tns:plink"></selector>
+  		<field xpath="@host2"></field>
+  	</keyref>
+  	<keyref name="Node-VFN" refer="tns:VNFname">
+  		<selector xpath="tns:nffgs/tns:nffg/tns:node"></selector>
+  		<field xpath="@functionalType"></field>
+  	</keyref>
+  	
+  </element>
+  
+  
+  
+  <complexType name="NfvSystemType">
+  		<sequence>
+  			<element ref="tns:nffgs"  ></element>
+  			<element ref="tns:hosts" ></element>
+  			<element ref="tns:connections" ></element>
+  			<element ref="tns:catalogue" ></element>
+  		</sequence>
+  	</complexType>
+  	
+  	<!-- ***************************************** NFFG***************************************************** -->
+  <element name="nffgs" type="tns:NFFGsType"></element>
+<element name="nffg" type="tns:NF-FGtype"> 
+				<unique name="LinkName"> 
+  					<selector xpath="tns:node/tns:links/tns:link"></selector>
+  					<field xpath="@name"></field>
+  				</unique>
+</element>
+<element name="node" type="tns:NodeType" > </element>
+<element name="reachablehosts" type="tns:ReachableHostsType"></element>
+<element name="links" type="tns:LinksType"></element>
+<element name="link" type="tns:LinkType" > </element>
+
+	<complexType name="NFFGsType">
+		<sequence>
+			<element ref="tns:nffg" maxOccurs="unbounded"></element>
+		</sequence>
+	</complexType>
+
+  <complexType name="NF-FGtype">
+  	<sequence>
+  		<element ref="tns:node" maxOccurs="unbounded"></element>
+  	</sequence>
+  	<attribute name="name" type="tns:FirstAlphabeticThenAlphanumeric" default="dummyNffg"></attribute>
+  	<attribute name="deployTime" type="dateTime"  default="2018-01-28T13:53:20.000+02:00"></attribute>
+  
+  </complexType>
+  
+  <complexType name="NodeType">
+  	<sequence>
+  		<element ref="tns:links" minOccurs="0" maxOccurs="1"></element>
+  		<element ref="tns:reachablehosts" minOccurs="0" maxOccurs="1"></element>
+  	</sequence>
+  	<attribute name="name" type="tns:FirstAlphabeticThenAlphanumeric" default="dummyNode"></attribute>
+  	<attribute name="NF-FG" type="tns:FirstAlphabeticThenAlphanumeric" default="dummyNffg"></attribute>
+  	<attribute name="host" type="tns:FirstAlphabeticThenAlphanumeric" default="dummyHost"></attribute>
+  	<attribute name="functionalType" type="tns:FirstAlphabeticThenAlphanumeric" use="required"></attribute>
+  </complexType>
+  
+  <complexType name="LinksType">
+  	<sequence>
+  		<element ref="tns:link" minOccurs="0"  maxOccurs="unbounded"></element>
+  	</sequence>
+  </complexType>
+  
+  <complexType name="ReachableHostsType">
+  	<sequence> 
+  		<element ref="tns:host" minOccurs="0" maxOccurs="unbounded"></element>
+  	</sequence>
+  	<attribute name="startingNode" type="tns:FirstAlphabeticThenAlphanumeric" default="dummyNode"></attribute>
+  </complexType>
+  
+ 
+  
+  <complexType name="LinkType">
+  	<attribute name="name" type="tns:FirstAlphabeticThenAlphanumeric" use="optional"></attribute>
+  	<attribute name="sourceNode" type="tns:FirstAlphabeticThenAlphanumeric" default="dummySrcNode"></attribute>
+  	<attribute name="destinationNode" type="tns:FirstAlphabeticThenAlphanumeric" default="dummyDstNode"></attribute>
+  	<attribute name="throughput" type="tns:positiveFloat" default="0.0"></attribute>
+  	<attribute name="latency" type="nonNegativeInteger" default="0"></attribute>
+  	 <attribute name="overwrite" type="boolean" use="optional"></attribute>
+  </complexType>
+  
+  <!-- *********************************************************HOST*************************************************** -->
+  
+  <element name="hosts" type="tns:HostsType"></element>
+<element name="host" type="tns:HostType"></element>
+<element name="virtualizednodes" type="tns:VirtualizedNodesType"></element>
+<element name="virtualizednode" type="tns:VirtualNodeType"></element>
+
+
+<complexType name="HostsType">
+	<sequence>
+		<element ref="tns:host"  maxOccurs="unbounded"></element>
+	</sequence>
+
+</complexType>
+
+<complexType name="HostType">
+  	<sequence>
+  		<element ref="tns:virtualizednodes"  minOccurs="0" maxOccurs="1" ></element>
+  	</sequence>
+  	<attribute name="name" type="tns:FirstAlphabeticThenAlphanumeric" default="dummyHost"></attribute>
+  	<attribute name="numberOfVNFs" type="nonNegativeInteger" default="0"></attribute>
+  	<attribute name="amountOfMemory" type="nonNegativeInteger" default="0"></attribute>
+  	<attribute name="diskStorage" type="nonNegativeInteger" default="0"></attribute>
+  </complexType>
+  
+  <complexType name="VirtualizedNodesType">
+  	<sequence>
+  		<element ref="tns:virtualizednode" maxOccurs="unbounded"></element>
+  	</sequence>
+  </complexType>
+  
+  
+  
+  <complexType name="VirtualNodeType">
+  		<attribute name="nodeName" type="tns:FirstAlphabeticThenAlphanumeric" default="dummyNode"></attribute>
+  		<attribute name="nodeNFFG" type="tns:FirstAlphabeticThenAlphanumeric" default="dummyNffg"></attribute>
+  </complexType>
+  
+  <!-- ****************************************** CONNECTION ****************************************************-->
+  
+  <element name="connections" type="tns:ConnectionsType"></element>
+<element name="plink" type="tns:PLPtype"></element>
+
+<complexType name="ConnectionsType">
+	<sequence>
+		<element ref="tns:plink" maxOccurs="unbounded"> </element>
+	</sequence>
+</complexType>
+
+<complexType name="PLPtype">
+  	<attribute name="host1" type="tns:FirstAlphabeticThenAlphanumeric" default="dummyhost"></attribute>
+  	<attribute name="host2" type="tns:FirstAlphabeticThenAlphanumeric" default="dummyhost"></attribute>
+  	<attribute name="throughput" type="tns:positiveFloat" use="required"></attribute>
+  	<attribute name="latency" type="nonNegativeInteger" use="required"></attribute>
+  
+  </complexType>
+  
+  <!-- ****************************************** CATALOGUE *****************************************************-->
+  
+  <element name="catalogue" type="tns:CatalogueType"></element>
+<element name="vnf" type="tns:VNFtype"></element>
+
+   <complexType name="CatalogueType">
+  	<sequence>
+  		<element ref="tns:vnf" maxOccurs="unbounded"></element>
+  	</sequence>
+  </complexType>
+  
+  <complexType name="VNFtype">
+  	<attribute name="name" type="tns:FirstAlphabeticThenAlphanumeric" default="dummyVNF"></attribute>
+  	<attribute name="type" type="tns:EnumeratedFunctionalTypes" use="required"></attribute> 
+  	<attribute name="amountOfMemory" type="nonNegativeInteger" use="required"></attribute>
+  	<attribute name="diskStorage" type="nonNegativeInteger" use="required"></attribute>
+  </complexType>
+  
+  <!-- *****************************************SIMPLE TYPES *****************************************************-->
+  
+  
+<simpleType name="FirstAlphabeticThenAlphanumeric">
+  	<restriction base="token">
+  		<pattern value="[a-zA-Z][a-zA-Z0-9]*"></pattern>
+  	</restriction>
+ </simpleType>
+ 
+ <simpleType name="positiveFloat">
+  	<restriction base="float">
+  		<minInclusive value="0.0"></minInclusive>
+  	</restriction>
+ </simpleType>
+  
+  <simpleType name="EnumeratedFunctionalTypes">
+  	<restriction base="token">
+  		<enumeration value="CACHE"></enumeration>
+  		<enumeration value="DPI"></enumeration>
+  		<enumeration value="FW"></enumeration>
+  		<enumeration value="MAIL_CLIENT"></enumeration>
+  		<enumeration value="MAIL_SERVER"></enumeration>
+  		<enumeration value="NAT"></enumeration>
+  		<enumeration value="SPAM"></enumeration>
+  		<enumeration value="VPN"></enumeration>
+  		<enumeration value="WEB_CLIENT"></enumeration>
+  		<enumeration value="WEB_SERVER"></enumeration>
+  	</restriction>
+  </simpleType>
+  
+</schema>
+
+  
+ 
+ 
+ 
+ 
